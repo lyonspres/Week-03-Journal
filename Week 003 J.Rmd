@@ -2,10 +2,13 @@
 title: "Workbook 03"
 author: "Preston Lyons"
 date: "10/03/2021"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
+
 1.
-### Plot Missing Data Problem
+## Plot Missing Data Problem
 
 Missing Data Code Output: 
 
@@ -30,8 +33,9 @@ And it produces this:
 ggplot(data = mtcars) + 
 geom_point(mapping = aes(x = mpg, y = wt))
 ```
+
 2.
-### Using the mpg dataset, graph the relationship between city milage and highway mileage by year manufacture
+## Using the mpg dataset, graph the relationship between city milage and highway mileage by year manufacture
 ```{r mpg1}
 head(mpg)
 ```
@@ -42,6 +46,7 @@ geom_point(mapping = aes(x = cty, y = hwy, color=factor(year)))+
   xlab("City Mileage") + 
   ylab("Highway Mileage (per liter)") 
 ```
+
 3.
 ## Edit this graph so that the x axis and the y axis both start at 0
 ```{r graphedit}
@@ -51,15 +56,16 @@ ggplot(data = mpg) +
   xlab("Engine displacement in (units)") + 
   ylab("Highway miles per liter") + expand_limits(x = 0, y = 0)
 ```
+
 4. 
-### What is one benefit and one limitation for this graph above (in which the x and y values start at 0?)
+## What is one benefit and one limitation for this graph above (in which the x and y values start at 0?)
 
 Limitation: if the data doesn't start close to zero, it'll make what's going on in the data (viz., patterns) harder to see in the graph
 
 Advantage: it provides an honest look at the data, and avoids the risk of things being (or, less synically, appearing) manipulative to the reader. Marked differences found in the data can be relied on, by not starting at 0 differences may seem more pronounced, so starting at 0 avoids this problem. 
 
 5. 
-### Which of these two graphs do you prefer and why?
+## Which of these two graphs do you prefer and why?
 
 ```{r g001}
 g1 <-ggplot(data = mpg) + 
@@ -81,7 +87,7 @@ g1 / g2 + plot_annotation(title = "Which plot do you prefer and why?", tag_level
 I prefer the colourful graph (the first; g1) as it is easier to eyeball (informal inference) the graph and notice its patterns, and see where each type of vehicle is grouped.
 
 6.
-### Add a facet to this graph for the “class” variable
+## Add a facet to this graph for the “class” variable
 
 ```{r facetQ}
 ggplot(data = mpg) + 
@@ -91,13 +97,14 @@ ggplot(data = mpg) +
   ylab("Highway miles per liter") +
   facet_wrap(~ class, nrow = 2)
 ```
+
 7. 
-### Favourite Graph and Why
+## Favourite Graph and Why
 
 I actually prefer graph A - both have a great deal of utility, and should both be included in a publication if possible, however graph A 
 
 8.
-### 
+## Remove the legend 
 
 ```{r removeissue}
 ggplot(data = mpg) +
@@ -105,9 +112,81 @@ ggplot(data = mpg) +
   facet_wrap( ~ class, nrow = 2) +
   theme(legend.position = "none")
 ```
+
 9.
-### Convert the y variable to “numeric” and graph the relationship betweeen religiousity (x-axis) and `thr_mus' (y-axis) in the ISSP dataset. Create new axis labels
+## Convert the y variable to “numeric” and graph the relationship betweeen religiousity (x-axis) and `thr_mus' (y-axis) in the ISSP dataset. Create new axis labels
 
+```{r ISSP1}
+# read the issp dataset for questionaire see: ISSP_2018_Religion_Questionnaire_final_version1-2.pdf
+# 
+# subset of data from the issp dataset
+issp <- readr::read_csv2(url("https://raw.githubusercontent.com/go-bayes/psych-447/main/data/issp.csv"))
+```
+```{r ISSP2}
+head(issp)
+```
+```{r ISSP3}
+str(issp)
+```
+```{r ISSP44}
+ip <- issp %>%
+  mutate(
+    id = factor(id),
+    thr_ath = as.factor(thr_ath),
+    thr_bd = as.factor(thr_bd),
+    thr_ch = as.factor(thr_ch),
+    thr_hd = as.factor(thr_hd),
+    thr_jw = as.factor(thr_jw),
+    thr_ms = as.factor(thr_ms),
+    neg_ath = as.factor(neg_ath),
+    neg_bd = as.factor(neg_bd),
+    neg_ch = as.factor(neg_ch),
+    neg_hd  = as.factor(neg_hd),
+    neg_jw = as.factor(neg_jw),
+    neg_ms = as.factor(neg_ms),
+    wave  = as.factor(wave),
+    nzeuro = as.factor(nzeuro),
+    eduyears = as.numeric(eduyears),
+    male = as.factor(male),
+    age = as.numeric(age),
+    rightwing = as.numeric(rightwing),
+    rural = as.factor(rural),
+    religiosity = as.numeric(religiosity)
+  )
+```
+```{r ISSP55}
+library(ggplot2)
+ggplot(data = ip, aes(y = as.numeric(thr_ms), x = religiosity, colour = wave))  +  geom_jitter(alpha = .1) + 
+  geom_smooth(method = lm, fullrange = FALSE, alpha = 0.1) +
+   scale_y_continuous(limits = c(0,4)) +
+  labs(title = "Relationship bewtween perceived threat of muslims and type of religiosity") + 
+  xlab("Religiosity") + 
+  ylab("Perceived Threat of Muslims")
+```
 
+10.
+## Note that I have the following graph should start from 1 and run to 4 but currently runs from 0-4. Fix the graph
+```{r FixGraph}
+library(ggplot2)
+ggplot(data = ip, aes(y = as.numeric(thr_ms), x = religiosity, colour = wave))  +  geom_jitter(alpha = .1) + 
+  geom_smooth(method = lm, fullrange = FALSE, alpha = 0.1) +
+   scale_y_continuous(limits = c(1,4))
+```
 
+11.
+## Fix the Code & Discuss
 
+```{r fixcode1}
+library(sjPlot)
+plot_xtab(
+    ip$thr_ms,
+    ip$wave,
+    show.total = F,
+    show.n = F,
+    geom.colors = c("yellow", "blue")
+  ) + labs(title = "Percentage of People Who Feel Threatened by Muslims (2018 compared to 2019)") +
+  xlab("Threatened by Muslims") +  ylab("Frequency") +
+  #scale_y_continuous(limits=c(0,7)) + #theme(plot.title = element_text(size=09))
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+I've added a title to explain the bar chart, and changed the colours so that they were less provocative (green v red can represent good v bad) - I would like to understand how to change the x-axis from a percentage to a frequency (count) just out of interest, I assume this wasn't done as the sample sizes are different, but if they weren't it could be useful to know and compare tallies as well as percentages!
