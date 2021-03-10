@@ -84,14 +84,29 @@ I prefer the colourful graph (the first; g1) as it is easier to eyeball (informa
 ### Add a facet to this graph for the “class” variable
 
 ```{r facetQ}
-g2 <-ggplot(data = mpg) + 
+ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, shape=class)) + 
   labs(title = "Relationship bewtween engine displacement and fuel efficiency in the mpg automobile dataset") + 
   xlab("Engine displacement in (units)") + 
-  ylab("Highway miles per liter")
+  ylab("Highway miles per liter") +
+  facet_wrap(~ class, nrow = 2)
 ```
+7. 
+### Favourite Graph and Why
 
+I actually prefer graph A - both have a great deal of utility, and should both be included in a publication if possible, however graph A 
 
+8.
+### 
+
+```{r removeissue}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = class)) +
+  facet_wrap( ~ class, nrow = 2) +
+  theme(legend.position = "none")
+```
+9.
+### Convert the y variable to “numeric” and graph the relationship betweeen religiousity (x-axis) and `thr_mus' (y-axis) in the ISSP dataset. Create new axis labels
 
 
 
