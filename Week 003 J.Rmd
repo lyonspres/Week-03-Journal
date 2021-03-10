@@ -1,34 +1,98 @@
 ---
-title: "Week 03 Journal"
+title: "Workbook 03"
 author: "Preston Lyons"
-date: "04/03/2021"
+date: "10/03/2021"
 output: html_document
 ---
-
-Hey guys 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r libraries}
-library("tidyverse") +
-library("patchwork") +
-library("readr") +
-library("sjPlot")
-```
-
-# set theme
-
-```{r theme1}
-theme_set(theme_classic())
-```
-
 1.
-## Plot Missing Data Problem
+### Plot Missing Data Problem
 
+Missing Data Code Output: 
 
-```{r plot missing data}
+> library("tidyverse")
+> ggplot(data = mtcars) +
+> aes(mpg, wt, colour=factor(cyl))
 
+```{r codeproblem}
+library("tidyverse")
 ```
+```{r badgraph}
+ggplot(data = mtcars) + 
+  aes(mpg, wt, colour=factor(cyl))
+```
+What appears to be missing is the "geom_point" command preceding the aesthetic ("aes") command, and then defining which variables go into which axes. Including that code looks like this:
+
+> ggplot(data = mtcars) + 
+geom_point(mapping = aes(x = mpg, y = wt))
+
+And it produces this:
+```{r mpg222}
+ggplot(data = mtcars) + 
+geom_point(mapping = aes(x = mpg, y = wt))
+```
+2.
+### Using the mpg dataset, graph the relationship between city milage and highway mileage by year manufacture
+```{r mpg1}
+head(mpg)
+```
+```{r graphq1}
+ggplot(data = mpg) + 
+geom_point(mapping = aes(x = cty, y = hwy, color=factor(year)))+
+  labs(title ="Positive Relationship of City Mileage and Highway Mileage for each Manufacture Year.")   + 
+  xlab("City Mileage") + 
+  ylab("Highway Mileage (per liter)") 
+```
+3.
+## Edit this graph so that the x axis and the y axis both start at 0
+```{r graphedit}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  labs(title ="Negative relationship between engine displacement and fuel efficiency.")   + 
+  xlab("Engine displacement in (units)") + 
+  ylab("Highway miles per liter") + expand_limits(x = 0, y = 0)
+```
+4. 
+### What is one benefit and one limitation for this graph above (in which the x and y values start at 0?)
+
+Limitation: if the data doesn't start close to zero, it'll make what's going on in the data (viz., patterns) harder to see in the graph
+
+Advantage: it provides an honest look at the data, and avoids the risk of things being (or, less synically, appearing) manipulative to the reader. Marked differences found in the data can be relied on, by not starting at 0 differences may seem more pronounced, so starting at 0 avoids this problem. 
+
+5. 
+### Which of these two graphs do you prefer and why?
+
+```{r g001}
+g1 <-ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, colour =  class )) + 
+  labs(title = "Relationship bewtween engine displacement and fuel efficiency in the mpg automobile dataset") + 
+  xlab("Engine displacement in (units)") + 
+  ylab("Highway miles per liter") 
+
+g2 <-ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape =  class )) + 
+  labs(title = "Relationship bewtween engine displacement and fuel efficiency in the mpg automobile dataset") + 
+  xlab("Engine displacement in (units)") + 
+  ylab("Highway miles per liter")
+
+library("patchwork")
+
+g1 / g2 + plot_annotation(title = "Which plot do you prefer and why?", tag_levels = 'a')
+```
+I prefer the colourful graph (the first; g1) as it is easier to eyeball (informal inference) the graph and notice its patterns, and see where each type of vehicle is grouped.
+
+6.
+### Add a facet to this graph for the “class” variable
+
+```{r facetQ}
+g2 <-ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape=class)) + 
+  labs(title = "Relationship bewtween engine displacement and fuel efficiency in the mpg automobile dataset") + 
+  xlab("Engine displacement in (units)") + 
+  ylab("Highway miles per liter")
+```
+
+
+
+
+
 
